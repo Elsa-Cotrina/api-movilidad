@@ -1,8 +1,8 @@
 from flask import request
 from flask_restful import Resource,Api
 from .. import api
-from ..models.colegio_models import Colegio
-from ..schemas.colegio_schemas import ColegioSchema
+from ..models.movilidad_models import Movilidad
+from ..schemas.movilidad_schemas import MovilidadSchema
 
 # from werkzeug.security import (
 #     generate_password_hash,
@@ -16,17 +16,17 @@ from ..schemas.colegio_schemas import ColegioSchema
 #     get_jwt_identity
 # )
 
-api_colegio = Api(api)
+api_movilidad = Api(api)
 
-class ColegioResource(Resource):
+class MovilidadResource(Resource):
     
     def get(self):
-        data = Colegio.get_all()
-        schema = ColegioSchema(many=True)
+        data = Movilidad.get_all()
+        schema = MovilidadSchema(many=True)
         
         context = {
             'status':True,
-            'message':'Lista de Colegios',
+            'message':'Lista de movils',
             'content':schema.dump(data)
         }
         return context
@@ -36,14 +36,18 @@ class ColegioResource(Resource):
             data = request.get_json()
             # password_hash = generate_password_hash(data['password'])
             
-            colegio = Colegio()
-            colegio.colegio_nombre = data['colegio_nombre']
-            colegio.save()
+            movilidad = Movilidad()
+            movilidad.movil_tipo_servicio = data['tipo_servicio']
+            movilidad.movil_turno = data['turno']
+            movilidad.movil_sesion = data['seccion']
+            movilidad.movil_docente = data['docente']
+            movilidad.movil_pago = data['pago']
+            movilidad.save()
             
-            schema = ColegioSchema()
+            schema = MovilidadSchema()
             return {
                 'status':True,
-                'content':schema.dump(colegio)
+                'content':schema.dump(movilidad)
             }
             
         except Exception as e:
@@ -52,42 +56,50 @@ class ColegioResource(Resource):
                 'message':str(e)
             },500
         
-class ColegioDetailResource(Resource):
+class MovilidadDetailResource(Resource):
 
     def get(self,id):
-        colegio = Colegio.get_by_id(id)
-        schema = ColegioSchema()
+        movilidad = Movilidad.get_by_id(id)
+        schema = MovilidadSchema()
         context = {
             'status':True,
-            'context':schema.dump(colegio)
+            'context':schema.dump(movilidad)
         }
 
         return context
     
     def put(self,id):
         data = request.get_json()
-        colegio_nombre = data['colegio_nombre']
-    
-        colegio = Colegio.get_by_id(id)
-        colegio.colegio_nombre = colegio_nombre
-        colegio.save()
+        movil_tipo_servicio = data['tipo_servicio']
+        movil_turno = data['turno']
+        movil_sesion = data['seccion']
+        movil_docente = data['docente']
+        movil_pago = data['pago']
 
-        schema = ColegioSchema()
+        movilidad = Movilidad.get_by_id(id)
+        movilidad. movil_tipo_servicio = tipo_servicio
+        movilidad.movil_turno = turno
+        movilidad.movil_sesion = seccion
+        movilidad.movil_docente = docente
+        movilidad.movil_pago = pago
+        movilidad.save()
+
+        schema = MovilidadSchema()
 
         return {
             'status':True,
-            'content':schema.dump(colegio)
+            'content':schema.dump(movilidad)
         }
 
     def delete(self,id):
-        colegio = Colegio.get_by_id(id)
-        colegio.delete()
+        movilidad = Movilidad.get_by_id(id)
+        movilidad.delete()
         
-        schema = ColegioSchema()
+        schema = MovilidadSchema()
         
         context = {
             'status':True,
-            'content':schema.dump(colegio)
+            'content':schema.dump(movilidad)
         }
         
         return context
@@ -127,6 +139,6 @@ class ColegioDetailResource(Resource):
 #             'content':schema.dump(usuario)
 #         }
     
-api_colegio.add_resource(ColegioResource,'/colegio')
-api_colegio.add_resource(ColegioDetailResource,'/colegio/<id>')
+api_movilidad.add_resource(MovilidadResource,'/movilidad')
+api_movilidad.add_resource(MovilidadDetailResource,'/movilidad/<id>')
 # api_usuario.add_resource(AuthenticationResource,'/auth')
